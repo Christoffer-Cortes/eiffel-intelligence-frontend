@@ -17,7 +17,10 @@ before_install:
   - cd eiffel-intelligence
   - docker-compose up -d
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-  - cd ..
+  - cd target
+  - export EIFFEL_WAR=$(ls *.war)
+  - java -Dspring.config.location=file:../../src/integrationtest/resources/integration-test.properties -jar ${EIFFEL_WAR} &
+  - cd ../..
   
 script:
   - mvn test
