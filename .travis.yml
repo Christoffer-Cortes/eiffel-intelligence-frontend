@@ -13,6 +13,17 @@ env:
 
 before_install:
   - chmod +x pom.xml
+  - git clone --depth=50 --branch=master https://github.com/eiffel-community/eiffel-intelligence.git
+  - cd eiffel-intelligence
+  - mvn install -DskipTests
+  - cd target
+  - export EIFFEL_WAR=$(ls *.war)
+  - java -Dspring.config.location=file:../../src/integrationtest/resources/integration-test.properties -jar ${EIFFEL_WAR} &
+  - cd ../..
   
 script:
   - mvn test
+
+after_script:
+  - cd eiffel-intelligence
+  - fuser -k 8090/tcp
