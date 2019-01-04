@@ -23,7 +23,7 @@ before_install:
   - cd ../..
   
 script:
-  - export FLAG=-Dei.backendInstancesListJsonContent=[{ "contextPath": "", "port": "${EI_BACKEND_PORT}", "name": "EI-Backend-1", "host": "localhost", "https": false, "defaultBackend": true}]
+  - export FLAG='-Dei.backendInstancesListJsonContent=[{ "contextPath": "", "port": "${EI_BACKEND_PORT}", "name": "EI-Backend-1", "host": "localhost", "https": false, "defaultBackend": true}]'
   - mvn verify ${FLAG} -DskipUTs
 
 after_script:
