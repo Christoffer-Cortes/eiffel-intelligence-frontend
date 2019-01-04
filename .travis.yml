@@ -23,7 +23,7 @@ before_install:
   - cd ../..
   
 script:
-  - "mvn verify -Dei.backendInstancesListJsonContent=\"[{ 'contextPath': '', 'port': '${EI_BACKEND_PORT}', 'name': 'EI-Backend-1', 'host': 'localhost', 'https': false, 'defaultBackend': true}]\" -DskipUTs"
+  - "mvn verify -Dei.backendInstancesListJsonContent=\"[{ 'contextPath': '', 'port': '${EI_BACKEND_PORT}', 'name': 'EI-Backend-1', 'host': 'localhost', 'https': false, 'defaultBackend': true}]\""
 
 after_script:
   - cd eiffel-intelligence
