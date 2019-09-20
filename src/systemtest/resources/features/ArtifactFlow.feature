@@ -58,14 +58,6 @@ Feature: Artifact system test
     And condition with jmespath "publications[?locations[?type=='ARTIFACTORY']]" is added to "FlowCompleteSubscription"
     Then we send the "FlowCompleteSubscription" to eiffel intelligence for creation.
 
-    #################################MAIL Subscriptions#################################
-
-    Given subscription object "TCT1SubscriptionMAIL" is created which will send mail to "eiffel.community@gmail.com"
-    When mail subject is set to "" on subscription object "TCT1SubscriptionMAIL"
-    And body is set to "MyBody" on subscription object "TCT1SubscriptionMAIL"
-    And condition with jmespath "identity=='pkg:maven/com.mycompany.myproduct/artifact-name@1.0.0'" is added to "TCT1SubscriptionMAIL"
-    Then we send the "TCT1SubscriptionMAIL" to eiffel intelligence for creation.
-
     #####Check so that everything triggers######
     When the jenkins job "ArtC2Job" is triggered
     Then all jenkins jobs has been triggered
