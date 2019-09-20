@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Ignore;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
 
 import com.ericsson.ei.systemtest.utils.Config;
@@ -19,6 +20,11 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 
 @Ignore
+@TestPropertySource(properties = {
+        "spring.mail.host:aspmx.l.google.com",
+        "spring.mail.port:25",
+        "spring.mail.username:",
+        "spring.mail.password:"})
 public class ArtifactFlowSteps extends AbstractTestExecutionListener {
     private static final String JENKINS_TOKEN = "123";
 
@@ -42,6 +48,11 @@ public class ArtifactFlowSteps extends AbstractTestExecutionListener {
                                       config.getJenkinsInternalBaseUrl(), !hasParameters.isEmpty());
     }
 
+    @Given("^subscription object \"([^\"]*)\" is created which will send mail to \"([^\"]*)\"$")
+    public void subscription_is_created_mail(String subscriptionName, String notificationMeta) throws Throwable {
+        StepsUtils.createSubscriptionWithMailNotification(subscriptionName, notificationMeta);
+    }
+
     @Given("^the jenkins job \"([^\"]*)\" is triggered$")
     public void the_jenkins_job_is_triggered(String jenkinsJobToTrigger) throws Throwable {
         StepsUtils.triggerJenkinsJob(jenkinsJobToTrigger, JENKINS_TOKEN);
@@ -55,6 +66,16 @@ public class ArtifactFlowSteps extends AbstractTestExecutionListener {
     @When("^condition with jmespath \"([^\"]*)\" is added to \"([^\"]*)\"$")
     public void condition_with_jmespath_is_added_to(String jmesPath, String subscriptionName) throws Throwable {
         StepsUtils.addConditionToRequirement(jmesPath, subscriptionName);
+    }
+
+    @When("^mail subject is set to \"([^\"]*)\" on subscription object \"([^\"]*)\"$")
+    public void mail_subject_is_set_to(String emailSubject, String subscriptionName) throws Throwable {
+        StepsUtils.setEmailSubject(emailSubject, subscriptionName);
+    }
+
+    @When("^body is set to \"([^\"]*)\" on subscription object \"([^\"]*)\"$")
+    public void body_is_set_to(String body, String subscriptionName) throws Throwable {
+        StepsUtils.setBody(body, subscriptionName);
     }
 
     @Then("^a jenkins job \"([^\"]*)\" from \"([^\"]*)\" is created with parameters: (.*)$")

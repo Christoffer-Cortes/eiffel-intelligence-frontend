@@ -20,7 +20,9 @@ import org.slf4j.LoggerFactory;
 
 import com.ericsson.eiffelcommons.JenkinsManager;
 import com.ericsson.eiffelcommons.helpers.JenkinsXmlData;
+import com.ericsson.eiffelcommons.subscriptionobject.MailSubscriptionObject;
 import com.ericsson.eiffelcommons.subscriptionobject.RestPostSubscriptionObject;
+import com.ericsson.eiffelcommons.subscriptionobject.SubscriptionObject;
 import com.ericsson.eiffelcommons.utils.HttpRequest;
 import com.ericsson.eiffelcommons.utils.HttpRequest.HttpMethod;
 import com.ericsson.eiffelcommons.utils.ResponseEntity;
@@ -128,6 +130,12 @@ public class StepsUtils {
         subscriptions.put(subscriptionName, subscription);
     }
 
+    public static void createSubscriptionWithMailNotification(String subscriptionName, String notificationMeta) throws IOException {
+        MailSubscriptionObject subscription = new MailSubscriptionObject(subscriptionName);
+        subscription.setNotificationMeta(notificationMeta);
+        subscriptions.put(subscriptionName, subscription);
+    }
+
     /**
      * Adds a notification to the subscription
      *
@@ -149,11 +157,21 @@ public class StepsUtils {
      * @throws JSONException
      */
     public static void addConditionToRequirement(String jmesPath, String subscriptionName) throws JSONException {
-        RestPostSubscriptionObject subscription = (RestPostSubscriptionObject) subscriptions.get(subscriptionName);
+        SubscriptionObject subscription = (SubscriptionObject) subscriptions.get(subscriptionName);
 
         JSONObject condition = new JSONObject();
         condition.put("jmespath", jmesPath);
         subscription.addConditionToRequirement(0, condition);
+    }
+
+    public static void setEmailSubject(String emailSubject, String subscriptionName) {
+        MailSubscriptionObject subscription = (MailSubscriptionObject) subscriptions.get(subscriptionName);
+        subscription.setEmailSubject(emailSubject);
+    }
+
+    public static void setBody(String body, String subscriptionName) {
+        SubscriptionObject subscription = (SubscriptionObject) subscriptions.get(subscriptionName);
+        subscription.addNotificationBody(body);
     }
 
     /**
@@ -171,7 +189,7 @@ public class StepsUtils {
     public static ResponseEntity sendSubscriptionToEiffelIntelligence(String subscriptionName, String frontendBaseUrl, String backendBaseUrl) throws JSONException, ClientProtocolException, URISyntaxException, IOException {
         deleteSubscription(subscriptionName, frontendBaseUrl, backendBaseUrl);
 
-        RestPostSubscriptionObject subscription = (RestPostSubscriptionObject) subscriptions.get(subscriptionName);
+        SubscriptionObject subscription = (SubscriptionObject) subscriptions.get(subscriptionName);
         ResponseEntity response = new HttpRequest(HttpMethod.POST)
             .setBaseUrl(frontendBaseUrl)
             .setEndpoint("/subscriptions")
